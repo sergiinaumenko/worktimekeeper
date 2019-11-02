@@ -1,0 +1,33 @@
+version: '3.3'
+
+networks:
+  timekeeper-net:
+    driver: bridge
+
+services:
+  timekeeper-db:
+    image: postgres:12.0
+    networks:
+      - timekeeper-net
+    volumes:
+      - ./db_install/sql_scripts/init_users.sql:/docker-entrypoint-initdb.d/01_init-user.sql
+    ports:
+      - "5435:5432"
+
+  keycloak:
+    image: jboss/keycloak:7.0.1
+    depends_on:
+      - timekeeper-db
+    networks:
+      - timekeeper-net
+    ports:
+      - "8180:8080"
+    environment:
+      DB_VENDOR:   POSTGRES
+      DB_ADDR:     timekeeper-db
+      DB_PORT:     5435
+      DB_DATABASE: keycloak
+      DB_USER:     keycloak_admin
+      DB_PASSWORD: _QH0rg9iDNK1_wU89VRK6-E02IjCeNGH
+      KEYCLOAK_USER:     keycloak_admin
+      KEYCLOAK_PASSWORD: x1qQeitnBmIJNwDe6vtk9YmzmhzXBWB2
