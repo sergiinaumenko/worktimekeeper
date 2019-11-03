@@ -10,7 +10,8 @@ services:
     networks:
       - timekeeper-net
     volumes:
-      - ./db_install/sql_scripts/init_users.sql:/docker-entrypoint-initdb.d/01_init-user.sql
+      - ./db_install/sql_scripts/init_users.sql:/docker-entrypoint-initdb.d/01-init-user.sql
+      - ./db_install/sql_scripts/vacation_schema.sql:/docker-entrypoint-initdb.d/02-schema.sql
     ports:
       - "5435:5432"
 
