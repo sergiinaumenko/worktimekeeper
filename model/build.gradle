@@ -1,0 +1,70 @@
+import groovy.xml.MarkupBuilder
+import org.jooq.codegen.GenerationTool
+import org.jooq.meta.jaxb.Configuration
+
+import javax.xml.bind.JAXB
+
+buildscript {
+    repositories {
+        mavenCentral()
+        mavenLocal()
+    }
+    dependencies {
+        classpath('org.postgresql:postgresql:42.2.8')
+        classpath("org.jooq:jooq-codegen:3.12.3")
+        classpath("com.sun.xml.bind:jaxb-impl:2.3.0.1")
+        classpath("com.sun.xml.bind:jaxb-core:2.3.0.1")
+        classpath('javax.xml.bind:jaxb-api:2.3.1')
+    }
+}
+apply plugin: 'java'
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+dependencies {
+    compile('org.postgresql:postgresql')
+    compile('com.sun.xml.bind:jaxb-impl:2.3.0.1')
+    compile('com.sun.xml.bind:jaxb-core:2.3.0.1')
+    compile('org.jooq:jooq-codegen')
+    compile('javax.xml.bind:jaxb-api')
+}
+
+task JOOQgenerate() {
+    doFirst {
+        def writer = new StringWriter()
+        def xml = new MarkupBuilder(writer)
+                .configuration('xmlns': 'http://www.jooq.org/xsd/jooq-codegen-3.12.0.xsd') {
+                    jdbc() {
+                        driver('org.postgresql.Driver')
+                        url('jdbc:postgresql://localhost:5435/timekeeper')
+                        user('timekeeper_db_admin')
+                        password('ZppNw_5HKAqF1xg_4QFzQXgI_ACfbQRl')
+                    }
+                    generator() {
+                        name('org.jooq.codegen.DefaultGenerator')
+                        strategy {
+                            name('org.jooq.codegen.DefaultGeneratorStrategy')
+                        }
+                        database() {
+                            name('org.jooq.meta.postgres.PostgresDatabase')
+                            inputSchema('public')
+                        }
+                        generate() {
+                            relations(true)
+                            immutablePojos(true)
+                            fluentSetters(true)
+                            dao(true)
+                        }
+                        target() {
+                            packageName('ua.worktimekeeper.model.dayoff')
+                            directory(project.projectDir.getPath() + '\\src\\main\\java')
+                        }
+                    }
+                }
+        println writer.toString()
+        GenerationTool.generate(JAXB.unmarshal(new StringReader(writer.toString()), Configuration.class))
+    }
+}

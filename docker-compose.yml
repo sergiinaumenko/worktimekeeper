@@ -10,9 +10,20 @@ services:
     networks:
       - timekeeper-net
     volumes:
-      - ./db_install/sql_scripts/init_users.sql:/docker-entrypoint-initdb.d/01_init-user.sql
+      - ./db_install/src/main/resources/sql_scripts/vacation_schema.sql:/docker-entrypoint-initdb.d/02-schema.sql
     ports:
       - "5435:5432"
+    environment:
+      POSTGRES_PASSWORD: ZppNw_5HKAqF1xg_4QFzQXgI_ACfbQRl
+      POSTGRES_USER: timekeeper_db_admin
+      POSTGRES_DB: timekeeper
+
+  keycloak-db:
+    image: postgres:12.0
+    networks:
+      - timekeeper-net
+    ports:
+      - "5436:5432"
 
   keycloak:
     image: jboss/keycloak:7.0.1
@@ -24,8 +35,8 @@ services:
       - "8180:8080"
     environment:
       DB_VENDOR:   POSTGRES
-      DB_ADDR:     timekeeper-db
-      DB_PORT:     5435
+      DB_ADDR:     keycloak-db
+      DB_PORT:     5436
       DB_DATABASE: keycloak
       DB_USER:     keycloak_admin
       DB_PASSWORD: _QH0rg9iDNK1_wU89VRK6-E02IjCeNGH
