@@ -1,32 +1,32 @@
 plugins {
-	id 'java-library'
-	id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+    id 'java-library'
+    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 subprojects {
-	def javaVersion = 11
+    def javaVersion = 11
 
-	group = 'ua.worktimekeeper'
-	version '0.0.1-SNAPSHOT'
+    group = 'ua.worktimekeeper'
+    version '0.0.1-SNAPSHOT'
 
-	sourceCompatibility = javaVersion
-	targetCompatibility = javaVersion
+    sourceCompatibility = javaVersion
+    targetCompatibility = javaVersion
 
-	apply plugin: 'java'
-	apply plugin: 'io.spring.dependency-management'
-	apply plugin: 'java-library'
+    apply plugin: 'java'
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'java-library'
 
-	repositories {
-		jcenter()
-	}
+    repositories {
+        jcenter()
+    }
 
-	dependencyManagement {
-		imports {
-			mavenBom('org.springframework.boot:spring-boot-dependencies:2.2.0.RELEASE')
-		}
-	}
+    dependencyManagement {
+        imports {
+            mavenBom('org.springframework.boot:spring-boot-dependencies:2.2.0.RELEASE')
+        }
+    }
 }
