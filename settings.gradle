@@ -2,4 +2,3 @@ rootProject.name = 'worktimekeeper'
 include 'configuration'
 include 'db_install'
 include 'model'
-

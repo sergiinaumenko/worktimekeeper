@@ -24,21 +24,36 @@ services:
       - timekeeper-net
     ports:
       - "5436:5432"
+    environment:
+      POSTGRES_PASSWORD: _QH0rg9iDNK1_wU89VRK6-E02IjCeNGH
+      POSTGRES_USER: keycloak_admin
+      POSTGRES_DB: keycloak
 
   keycloak:
     image: jboss/keycloak:7.0.1
+    restart: on-failure
+    command:
+      - "-b"
+      - "0.0.0.0"
+      - "-Dkeycloak.migration.action=import"
+      - "-Dkeycloak.migration.provider=dir"
+      - "-Dkeycloak.migration.dir=/config/"
+      - "-Dkeycloak.migration.strategy=IGNORE_EXISTING"
     depends_on:
-      - timekeeper-db
+      - keycloak-db
     networks:
       - timekeeper-net
+    volumes:
+      - ./resources-docker/keycloak-config:/config/
     ports:
       - "8180:8080"
     environment:
       DB_VENDOR:   POSTGRES
       DB_ADDR:     keycloak-db
-      DB_PORT:     5436
+      DB_PORT:     5432
       DB_DATABASE: keycloak
       DB_USER:     keycloak_admin
       DB_PASSWORD: _QH0rg9iDNK1_wU89VRK6-E02IjCeNGH
       KEYCLOAK_USER:     keycloak_admin
       KEYCLOAK_PASSWORD: x1qQeitnBmIJNwDe6vtk9YmzmhzXBWB2
+      ROOT_LOGLEVEL: DEBUG
